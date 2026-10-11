@@ -1,0 +1,7 @@
+huggingface_lab/downloads/model/
+.venv/
+__pycache__/
+*.pyc
+*.db
+rag_pdf/chroma_db/
+.env

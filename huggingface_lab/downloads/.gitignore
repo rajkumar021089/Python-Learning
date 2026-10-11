@@ -1,0 +1,5 @@
+huggingface_lab/downloads/model/
+.venv/
+__pycache__/
+*.pyc
+.env
