@@ -1,5 +1,6 @@
 from pypdf import PdfReader
 import requests
+import chromadb
 
 PDF_FILE = "IntelliStay_RAG_Sample.pdf"
 
@@ -165,3 +166,34 @@ print("Score:", best_score)
 print("\nRetrieved text:")
 
 print(chunks[best_chunk_index])
+
+client = chromadb.PersistentClient(path="./chroma_db")
+
+collection = client.get_or_create_collection(
+    name="intellistay_docs",
+    embedding_function=None,
+    configuration={
+        "hnsw": {
+            "space": "cosine"
+        }
+    }
+)
+
+ids = [f"chunk_{i}" for i in range(len(chunks))]
+
+metadatas = [
+    {
+        "source": "IntelliStay_RAG_Sample.pdf",
+        "chunk_number": i
+    }
+    for i in range(len(chunks))
+]
+
+collection.upsert(
+    ids=ids,
+    documents=chunks,
+    embeddings=embeddings,
+    metadatas=metadatas
+)
+
+print("Stored chunks:", collection.count())
